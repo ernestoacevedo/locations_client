@@ -26,6 +26,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
         this.locations = locations;
     }
 
+    public void setLocations(ArrayList<Location> locations){
+        this.locations = locations;
+        notifyDataSetChanged();
+    }
+
     @Override
     public LocationAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(itemLayout,viewGroup,false);
@@ -35,9 +40,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     @Override
     public void onBindViewHolder(LocationAdapter.ViewHolder viewHolder, int i) {
         Location location  = locations.get(i);
-        Log.e("->", "setname");
         viewHolder.name.setText(location.getName());
-        viewHolder.position.setText(location.getLat()+","+location.getLng());
+        String position = location.getLat()+","+location.getLng();
+        viewHolder.position.setText(position);
     }
 
     @Override

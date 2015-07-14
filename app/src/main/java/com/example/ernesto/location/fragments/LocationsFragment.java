@@ -32,7 +32,8 @@ import java.util.ArrayList;
  */
 public class LocationsFragment extends Fragment {
 
-    ArrayList<Location> dataset;// = new ArrayList<Location>();
+    ArrayList<Location> dataset = new ArrayList<Location>();
+    LocationAdapter locationAdapter;
 
     public LocationsFragment() {
         // Required empty public constructor
@@ -54,48 +55,30 @@ public class LocationsFragment extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "Obteniendo datos");
-
         JsonArrayRequest req = new JsonArrayRequest(url,new Response.Listener<JSONArray>(){
             @Override
             public void onResponse(JSONArray response) {
-                Log.e("->","uno");
                 Log.e("response: ",response.toString());
                 dataset = parser(response);
+                locationAdapter.setLocations(dataset);
                 progressDialog.cancel();
             }
         }, new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("->",error.toString());
                 progressDialog.cancel();
             }
         });
 
-        ArrayList<Location> locations_test = new ArrayList<Location>();
-        Location location1 = new Location();
-        location1.setName("Ubicación 1");
-        location1.setLat("30");
-        location1.setLng("70");
-        locations_test.add(location1);
-        Location location2 = new Location();
-        location2.setName("Ubicación 2");
-        location2.setLat("30");
-        location2.setLng("70");
-        locations_test.add(location2);
-        Location location3 = new Location();
-        location3.setName("Ubicación 3");
-        location3.setLat("30");
-        location3.setLng("70");
-        locations_test.add(location3);
-
         queue.add(req);
-        Log.e("->","dos");
         RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.card_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new LocationAdapter(locations_test, R.layout.row_location));
+        locationAdapter = new LocationAdapter(dataset,R.layout.row_location);
+        recyclerView.setAdapter(locationAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
-
 
     public ArrayList<Location> parser(JSONArray response){
         ArrayList<Location> locations_response = new ArrayList<Location>();

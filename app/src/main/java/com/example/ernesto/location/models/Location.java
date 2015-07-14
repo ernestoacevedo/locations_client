@@ -34,11 +34,11 @@ public class Location {
     }
 
     public String getLng(){
-        return description;
+        return lng;
     }
 
     public void setLng(String n){
-        this.description = n;
+        this.lng = n;
     }
 
 
