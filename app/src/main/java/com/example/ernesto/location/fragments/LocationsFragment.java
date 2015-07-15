@@ -19,7 +19,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.ernesto.location.R;
 import com.example.ernesto.location.adapters.LocationAdapter;
-import com.example.ernesto.location.models.Location;
+import com.example.ernesto.location.models.LocationModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +32,7 @@ import java.util.ArrayList;
  */
 public class LocationsFragment extends Fragment {
 
-    ArrayList<Location> dataset = new ArrayList<Location>();
+    ArrayList<LocationModel> dataset = new ArrayList<LocationModel>();
     LocationAdapter locationAdapter;
 
     public LocationsFragment() {
@@ -80,10 +80,10 @@ public class LocationsFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public ArrayList<Location> parser(JSONArray response){
-        ArrayList<Location> locations_response = new ArrayList<Location>();
+    public ArrayList<LocationModel> parser(JSONArray response){
+        ArrayList<LocationModel> locations_response = new ArrayList<LocationModel>();
         for (int i = 0;i<response.length() ;i++){
-            Location location = new Location();
+            LocationModel location = new LocationModel();
             try {
                 JSONObject jsonObject = (JSONObject)response.get(i);
                 location.setName(jsonObject.getString("name"));

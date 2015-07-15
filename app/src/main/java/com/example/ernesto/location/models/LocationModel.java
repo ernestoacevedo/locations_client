@@ -3,7 +3,7 @@ package com.example.ernesto.location.models;
 /**
  * Created by ernesto on 13-07-15.
  */
-public class Location {
+public class LocationModel {
     private String name;
     private String description;
     private String lat;

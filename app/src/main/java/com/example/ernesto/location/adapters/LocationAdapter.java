@@ -1,5 +1,7 @@
 package com.example.ernesto.location.adapters;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ernesto.location.R;
-import com.example.ernesto.location.models.Location;
+import com.example.ernesto.location.models.LocationModel;
 
 import java.util.ArrayList;
 
@@ -17,16 +19,16 @@ import java.util.ArrayList;
  */
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder> {
 
-    ArrayList<Location> locations;
+    ArrayList<LocationModel> locations;
     int itemLayout;
 
-    public LocationAdapter(ArrayList<Location> locations,int itemLayout){
+    public LocationAdapter(ArrayList<LocationModel> locations,int itemLayout){
         Log.e("->", "LocationAdapter");
         this.itemLayout = itemLayout;
         this.locations = locations;
     }
 
-    public void setLocations(ArrayList<Location> locations){
+    public void setLocations(ArrayList<LocationModel> locations){
         this.locations = locations;
         notifyDataSetChanged();
     }
@@ -39,7 +41,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(LocationAdapter.ViewHolder viewHolder, int i) {
-        Location location  = locations.get(i);
+        LocationModel location  = locations.get(i);
+        viewHolder.currentLocation = locations.get(i);
         viewHolder.name.setText(location.getName());
         String position = location.getLat()+","+location.getLng();
         viewHolder.position.setText(position);
@@ -53,11 +56,20 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView name;
         TextView position;
+        LocationModel currentLocation;
 
         public ViewHolder(View itemView){
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.location_name);
             position = (TextView) itemView.findViewById(R.id.location_position);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    Log.e("click", currentLocation.getLat());
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("geo:0,0?q=" + currentLocation.getLat() + "," + currentLocation.getLng() + "&z=16 ("+currentLocation.getName()+")"));
+                    v.getContext().startActivity(intent);
+                }
+            });
         }
     }
 }
