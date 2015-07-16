@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -79,67 +80,41 @@ public class FormFragment extends Fragment implements View.OnClickListener {
 
     private void postData(final LocationModel locationModel) {
 
-        final String URL = "http://52.25.110.191:3000/locations";
+        final String URL = "http://52.25.110.191:3000/locations.json";
         RequestQueue rq = Volley.newRequestQueue(getActivity());
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "Enviando datos");
-
-        /*
-        StringRequest postReq = new StringRequest(Request.Method.POST, "http://52.25.110.191:3000/locations", new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                Log.e("->Respuesta Envío:",response.toString());
-                progressDialog.cancel();
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("->Error:", error.toString());
-                progressDialog.cancel();
-            }
-        })  {
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("name", locationModel.getName());
-                params.put("description",locationModel.getDescription());
-                params.put("lat",locationModel.getLat());
-                params.put("lng",locationModel.getLng());
-                return params;
-            }
-
-        };
-        */
-        String data_object = "{'location':{'name':'"+locationModel.getName()+"', 'lat':'"+locationModel.getLat()+"', 'lng':'"+locationModel.getLng()+"', 'description':'"+locationModel.getDescription()+"'}}";
-        JSONObject data = null;
+        JSONObject jsonObj = new JSONObject();
+        JSONObject data = new JSONObject();
         try {
-            data = new JSONObject(data_object);
+            data.put("name",locationModel.getName());
+            data.put("description",locationModel.getDescription());
+            data.put("lat",locationModel.getLat());
+            data.put("lng",locationModel.getLng());
+            jsonObj.put("location",data);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest postReq = new JsonObjectRequest(URL,data,
+        JsonObjectRequest postReq = new JsonObjectRequest(URL,jsonObj,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            VolleyLog.v("Response:%n %s", response.toString(4));
-                            progressDialog.cancel();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        VolleyLog.v("Response: ", response.toString());
+                        progressDialog.cancel();
+                        Toast toast1 = Toast.makeText(getActivity().getApplicationContext(), "Datos enviados correctamente", Toast.LENGTH_SHORT);
+                        toast1.show();
+                        etDescripcion.setText("");
+                        etNombre.setText("");
                     }
                 }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.e("Error: ", error.getMessage());
-                progressDialog.cancel();
-            }
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.e("Error: ", error.toString());
+                        progressDialog.cancel();
+                        Toast toast1 = Toast.makeText(getActivity().getApplicationContext(), "Error al enviar datos", Toast.LENGTH_SHORT);
+                        toast1.show();
+                    }
         });
-
-// add the request object to the queue to be executed
 
         rq.add(postReq);
 
